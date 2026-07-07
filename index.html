@@ -23,6 +23,9 @@
     --ok-soft: #DFF0E8;
     --chip-on: #29231E;
     --chip-on-ink: #F8F5F1;
+    --warn: #A8721F;
+    --warn-soft: #F7EBD7;
+    --lamp-off: #D8C9C7;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -57,6 +60,9 @@
     --ok-soft: #DFF0E8;
     --chip-on: #29231E;
     --chip-on-ink: #F8F5F1;
+    --warn: #A8721F;
+    --warn-soft: #F7EBD7;
+    --lamp-off: #D8C9C7;
   }
   :root[data-theme="dark"] {
     --bg: #171310;
@@ -73,6 +79,9 @@
     --ok-soft: #1D362B;
     --chip-on: #EFE7DC;
     --chip-on-ink: #171310;
+    --warn: #E0A94F;
+    --warn-soft: #3C300F;
+    --lamp-off: #4A3C41;
   }
 
   * { box-sizing: border-box; }
@@ -273,6 +282,85 @@
   }
   .toast.show { opacity: 1; }
 
+  /* 計算機 */
+  #m-calc .stepper { display: flex; align-items: stretch; gap: 10px; }
+  #m-calc .stepper button {
+    width: 56px; min-height: 56px; font-size: 1.6rem; font-weight: 700;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface2); color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  #m-calc .stepper button:active { background: var(--hot-soft); }
+  #m-calc .stepper .value {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 800; font-variant-numeric: tabular-nums;
+    background: var(--surface2); border: 1px solid var(--line); border-radius: 12px;
+  }
+  #m-calc .stepper .value small { font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); margin-left: 4px; }
+  #m-calc input[type="number"] {
+    width: 100%; min-height: 52px; font-size: 1.3rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; padding: 8px 14px;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface2); color: var(--ink);
+  }
+  #m-calc .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  #m-calc .seg button {
+    min-height: 48px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface2); color: var(--ink-soft);
+    font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  #m-calc .seg button.on { background: var(--hot-soft); border-color: var(--hot); color: var(--hot); }
+  #m-calc .cfield { display: flex; flex-direction: column; gap: 8px; }
+  #m-calc .cfield + .cfield { margin-top: 16px; }
+  #m-calc .cfield-label { font-size: 0.85rem; font-weight: 700; }
+  #m-calc .cfield-note { font-size: 0.72rem; color: var(--ink-soft); }
+  #m-calc input:focus-visible, #m-calc button:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+  .cverdict { text-align: center; padding: 22px 16px 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+  .cverdict .lamp { font-size: 3.2rem; line-height: 1; display: inline-block; filter: grayscale(1) opacity(0.45); transition: filter 0.3s; }
+  .cverdict.lit .lamp { filter: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cverdict.tier-atsu .lamp { animation: pulse 1.1s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  }
+  .cverdict-word { font-size: 1.5rem; font-weight: 800; margin-top: 8px; letter-spacing: 0.06em; }
+  .cverdict-desc { font-size: 0.82rem; color: var(--ink-soft); margin-top: 4px; }
+  .cverdict.tier-atsu { border-color: var(--hot); background: var(--hot-soft); }
+  .cverdict.tier-atsu .cverdict-word { color: var(--hot); }
+  .cverdict.tier-nerai { border-color: var(--ok); background: var(--ok-soft); }
+  .cverdict.tier-nerai .cverdict-word { color: var(--ok); }
+  .cverdict.tier-yosumi { border-color: var(--warn); background: var(--warn-soft); }
+  .cverdict.tier-yosumi .cverdict-word { color: var(--warn); }
+  .cverdict.tier-miokuri .cverdict-word { color: var(--ink-soft); }
+  .creasons { margin: 12px 0 0; padding: 0; list-style: none; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+  .creasons li { font-size: 0.8rem; padding: 7px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); }
+  #m-calc .cstats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #m-calc .cstat { background: var(--surface2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  #m-calc .cstat .k { font-size: 0.7rem; color: var(--ink-soft); }
+  #m-calc .cstat .v { font-size: 1.35rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #m-calc .cstat .v small { font-size: 0.75rem; font-weight: 600; color: var(--ink-soft); }
+  #m-calc .cstat.hot { border-color: var(--hot); }
+  #m-calc .cstat.hot .v { color: var(--hot); }
+  #m-calc .dist { display: flex; flex-direction: column; gap: 10px; }
+  #m-calc .dist-row { display: grid; grid-template-columns: 5.4em 1fr 3.4em; align-items: center; gap: 8px; }
+  #m-calc .dist-row .lbl { font-size: 0.78rem; font-weight: 700; }
+  #m-calc .dist-row .lbl small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 0.68rem; }
+  #m-calc .dist-row .bar { height: 14px; border-radius: 7px; background: var(--surface2); overflow: hidden; }
+  #m-calc .dist-row .bar i { display: block; height: 100%; background: var(--hot); border-radius: 7px; }
+  #m-calc .dist-row .pct { font-size: 0.8rem; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  #m-calc .dist-row.dead { opacity: 0.38; }
+
+  /* 日誌の画像添付 */
+  .imgthumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .imgthumbs img {
+    width: 72px; height: 72px; object-fit: cover;
+    border-radius: 8px; border: 1px solid var(--line); cursor: pointer;
+  }
+  .imgmodal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+    display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
+  }
+  .imgmodal.show { display: flex; }
+  .imgmodal img { max-width: 100%; max-height: 92vh; border-radius: 10px; }
+
   footer.note {
     margin-top: 16px;
     font-size: 0.7rem;
@@ -295,9 +383,9 @@
     <button data-m="duo">沖ドキDUOアンコール</button>
     <button data-m="duo1">沖ドキDUO(初代)</button>
     <button data-m="nangoku">南国育ち(スマスロ)</button>
-    <button data-m="nangoku30">南国育ち30</button>
     <button data-m="chibariyo2">チバリヨ2</button>
     <button data-m="kabaneri2">カバネリ2 海門決戦</button>
+    <button data-m="calc">🌺 DUOアンコール計算機</button>
     <button data-m="log">📔 日誌</button>
   </nav>
 
@@ -390,7 +478,7 @@
       <div class="meta">2025年導入／ユニバーサル／初代DUOとは別物</div>
       <div class="oneline">スルー天井は抽選型（3・5・9・10回目）。判定は専用計算機で</div>
     </div>
-    <a class="calclink" href="https://claude.ai/code/artifact/d1f3b3fd-4256-412a-ba1d-f7a76f5cfec5">🌺 天国期待度計算機を開く</a>
+    <a class="calclink" href="#" id="gotoCalc">🌺 天国期待度計算機を開く（内蔵）</a>
     <div class="card">
       <h2>仕様</h2>
       <table>
@@ -515,45 +603,6 @@
     </div>
   </section>
 
-  <!-- 南国育ち30 -->
-  <section class="machine" id="m-nangoku30">
-    <div class="card machine-head">
-      <div class="name">南国育ち30</div>
-      <div class="meta">2021年導入／アムテックス／6号機・30φ</div>
-      <div class="oneline">有利区間ランプ搭載＝リセットを台が自己申告。単発後拾いが最大の蜜</div>
-    </div>
-    <div class="card">
-      <h2>仕様</h2>
-      <table>
-        <tr><th>天井</th><td class="num">通常996G／リセ後796G</td></tr>
-        <tr><th>短縮天井</th><td class="num">準備C以上滞在時のボーナス後 401G</td></tr>
-        <tr><th>リセット恩恵</th><td>高モード選択率優遇＋天井796G短縮</td></tr>
-        <tr><th>朝イチ判別</th><td>有利区間ランプ<b>消灯＝変更濃厚</b>／点灯＝据え置き濃厚</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <h2>狙い目</h2>
-      <table>
-        <tr><th>通常時</th><td class="num">600G～</td></tr>
-        <tr><th>リセット後</th><td class="num">300G～</td></tr>
-        <tr><th>単発後拾い</th><td class="num"><span class="hot">単発後36G以内</span>→ランプ消灯まで打つ</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <h2>やめどき</h2>
-      <div class="yame">連チャン後は<b>1G回して</b>復活なしでやめ／単発後は<b>有利区間ランプ消灯</b>を毎G確認してやめ</div>
-    </div>
-    <div class="card">
-      <h2>チェックポイント</h2>
-      <ul class="points">
-        <li>クレジット表示脇の有利区間ランプの位置をまず覚える</li>
-        <li>単発後にランプ点灯のまま捨てられた台＝良モードの続き持ち</li>
-        <li>リプレイ入賞時の特殊フラッシュ＝通常C以上期待／遅れ演出のボーナス否定＝通常B以上確定</li>
-        <li class="warn">2021年の台。撤去は時間の問題、賞味期限つきの獲物</li>
-      </ul>
-    </div>
-  </section>
-
   <!-- チバリヨ2 -->
   <section class="machine" id="m-chibariyo2">
     <div class="card machine-head">
@@ -646,6 +695,81 @@
     </div>
   </section>
 
+  <!-- DUOアンコール計算機 -->
+  <section class="machine" id="m-calc">
+    <div class="card machine-head">
+      <div class="name">沖ドキ！DUOアンコール 天国期待度計算機</div>
+      <div class="meta">スルー回数とハマりG数から次回天国保証率と拾い判定を計算</div>
+      <div class="oneline">スルー天井振り分け（3・5・9・10回目）のベイズ更新。保証ベースの下限値表示</div>
+    </div>
+
+    <div class="card">
+      <h2>台の状態を入力</h2>
+      <div class="cfield">
+        <div class="cfield-label">現在のスルー回数</div>
+        <div class="cfield-note">天国に入らなかったボーナスの回数（履歴から数える）</div>
+        <div class="stepper">
+          <button type="button" id="calcDec" aria-label="スルー回数を減らす">−</button>
+          <div class="value"><span id="calcThrough">0</span><small>スルー</small></div>
+          <button type="button" id="calcInc" aria-label="スルー回数を増やす">＋</button>
+        </div>
+      </div>
+      <div class="cfield">
+        <div class="cfield-label">現在のハマりG数</div>
+        <input type="number" id="calcGames" inputmode="numeric" min="0" max="999" value="0" placeholder="0">
+      </div>
+      <div class="cfield">
+        <div class="cfield-label">朝イチの状態</div>
+        <div class="cfield-note">リセット確定なら振り分け優遇（約25%で4スルー天井）</div>
+        <div class="seg" id="calcResetSeg">
+          <button type="button" data-v="normal" class="on">据え置き・不明</button>
+          <button type="button" data-v="reset">リセット確定</button>
+        </div>
+      </div>
+      <div class="cfield">
+        <div class="cfield-label">交換率</div>
+        <div class="seg" id="calcRateSeg">
+          <button type="button" data-v="eq" class="on">等価</button>
+          <button type="button" data-v="56">5.6枚（非等価）</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cverdict" id="calcVerdict">
+      <span class="lamp" aria-hidden="true">🌺</span>
+      <div class="cverdict-word" id="calcVerdictWord">見送り</div>
+      <div class="cverdict-desc" id="calcVerdictDesc"></div>
+      <ul class="creasons" id="calcReasons"></ul>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h2>期待度サマリー</h2>
+      <div class="cstats">
+        <div class="cstat" id="calcStatNext">
+          <div class="k">次回ボーナスで天国以上保証</div>
+          <div class="v"><span id="calcPNext">0</span><small>%</small></div>
+        </div>
+        <div class="cstat" id="calcStatGuard">
+          <div class="k">次の保証ポイント</div>
+          <div class="v" id="calcNextGuard">—</div>
+        </div>
+        <div class="cstat">
+          <div class="k">G数天井（800G）まで</div>
+          <div class="v"><span id="calcRemain">800</span><small>G</small></div>
+        </div>
+        <div class="cstat">
+          <div class="k">天井までの最大投資目安</div>
+          <div class="v"><span id="calcInvest">25</span><small>千円</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h2>スルー天井の残り振り分け</h2>
+      <div class="dist" id="calcDist"></div>
+    </div>
+  </section>
+
   <!-- 狩猟日誌 -->
   <section class="machine" id="m-log">
     <div class="card machine-head">
@@ -681,7 +805,6 @@
           <option>沖ドキDUOアンコール</option>
           <option>沖ドキDUO(初代)</option>
           <option>南国育ち(スマスロ)</option>
-          <option>南国育ち30</option>
           <option>チバリヨ2</option>
           <option>カバネリ2 海門決戦</option>
           <option>その他</option>
@@ -704,6 +827,11 @@
       <div class="field">
         <div class="field-label">展開メモ（当たり方・やめどき判断・反省など）</div>
         <textarea id="fMemo" placeholder="例: 天井まで連行、AT3連890枚。終了後ジャギステージ確認で128Gまで様子見→示唆なしやめ"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">写真（履歴データなど・最大2枚／この端末にのみ保存）</div>
+        <input type="file" id="fImgs" accept="image/*" multiple>
+        <div class="imgthumbs" id="imgPreview"></div>
       </div>
       <button type="button" class="btn save" id="btnSave">この稼働を記録する</button>
       <button type="button" class="btn export" id="btnExport">📋 美咲先生に報告（全記録をコピー）</button>
@@ -747,6 +875,7 @@
   </section>
 
   <div class="toast" id="toast"></div>
+  <div class="imgmodal" id="imgModal"><img id="imgModalImg" alt="添付写真の拡大表示"></div>
 
   <div class="card rules" style="margin-top:14px">
     <h2>共通の掟</h2>
@@ -765,14 +894,20 @@
 
 <script>
   const tabs = document.getElementById("tabs");
-  tabs.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    for (const b of tabs.querySelectorAll("button")) b.classList.toggle("on", b === btn);
+  function selectTab(key) {
+    for (const b of tabs.querySelectorAll("button")) b.classList.toggle("on", b.dataset.m === key);
     for (const s of document.querySelectorAll(".machine")) {
-      s.classList.toggle("show", s.id === "m-" + btn.dataset.m);
+      s.classList.toggle("show", s.id === "m-" + key);
     }
     window.scrollTo({ top: 0 });
+  }
+  tabs.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (btn) selectTab(btn.dataset.m);
+  });
+  document.getElementById("gotoCalc").addEventListener("click", (e) => {
+    e.preventDefault();
+    selectTab("calc");
   });
 
   // ---- 狩猟日誌 ----
@@ -785,8 +920,18 @@
     catch { return []; }
   }
   function saveLog(entries, opts) {
-    localStorage.setItem(LOG_KEY, JSON.stringify(entries));
+    try {
+      localStorage.setItem(LOG_KEY, JSON.stringify(entries));
+    } catch (e) {
+      toastMsg("端末の保存容量が限界。古い記録の写真を削除して");
+      return;
+    }
     if (!opts || !opts.noSync) scheduleSync();
+  }
+
+  // クラウドには写真本体を送らず枚数だけ記録（同期を軽く保つ）
+  function cloudEntries() {
+    return loadLog().map(({ imgs, ...rest }) => ({ ...rest, imgCount: imgs ? imgs.length : 0 }));
   }
 
   function mergeEntries(current, incoming) {
@@ -833,6 +978,7 @@
           </div>
           <div class="body">拾い条件: ${esc(e.cond) || "（未記入）"}／投資 ${e.inv.toLocaleString()}円 → 回収 ${e.ret.toLocaleString()}円</div>
           ${e.memo ? `<div class="memo">${esc(e.memo)}</div>` : ""}
+          ${e.imgs && e.imgs.length ? `<div class="imgthumbs">${e.imgs.map((src, i) => `<img src="${src}" alt="添付写真${i + 1}" loading="lazy">`).join("")}</div>` : ""}
           <button type="button" class="del">この記録を削除</button>
         </div>`)
       .join("");
@@ -844,6 +990,51 @@
   }
 
   $("fDate").value = new Date().toISOString().slice(0, 10);
+
+  // ---- 写真添付 ----
+  let pendingImgs = [];
+
+  function compressImage(file) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const max = 800;
+        const sc = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * sc);
+        c.height = Math.round(img.height * sc);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", 0.62));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+
+  function renderPreview() {
+    $("imgPreview").innerHTML = pendingImgs
+      .map((src, i) => `<img src="${src}" alt="添付予定${i + 1}" title="タップで取り消し" data-i="${i}">`)
+      .join("");
+  }
+
+  $("fImgs").addEventListener("change", async (e) => {
+    for (const file of e.target.files) {
+      if (pendingImgs.length >= 2) { toastMsg("写真は2枚までよ"); break; }
+      const data = await compressImage(file);
+      if (data) pendingImgs.push(data);
+    }
+    e.target.value = "";
+    renderPreview();
+  });
+
+  $("imgPreview").addEventListener("click", (e) => {
+    const img = e.target.closest("img");
+    if (!img) return;
+    pendingImgs.splice(Number(img.dataset.i), 1);
+    renderPreview();
+  });
 
   $("btnSave").addEventListener("click", () => {
     const inv = Number($("fIn").value) || 0;
@@ -863,11 +1054,26 @@
       inv, ret,
       pl: ret - inv,
       memo: $("fMemo").value.trim(),
+      imgs: pendingImgs.slice(),
     });
     saveLog(entries);
     for (const id of ["fCond", "fIn", "fOut", "fMemo"]) $(id).value = "";
+    pendingImgs = [];
+    renderPreview();
     renderLog();
     toastMsg("記録したわ。お疲れさま！");
+  });
+
+  // 記録一覧の写真タップで拡大
+  $("logList").addEventListener("click", (e) => {
+    const img = e.target.closest(".imgthumbs img");
+    if (!img) return;
+    $("imgModalImg").src = img.src;
+    $("imgModal").classList.add("show");
+  });
+  $("imgModal").addEventListener("click", () => {
+    $("imgModal").classList.remove("show");
+    $("imgModalImg").src = "";
   });
 
   $("logList").addEventListener("click", (e) => {
@@ -892,7 +1098,8 @@
         `▼${e.date} ${e.store || "店名なし"}／${e.machine}\n` +
         `拾い条件: ${e.cond || "未記入"}\n` +
         `投資${e.inv.toLocaleString()}円→回収${e.ret.toLocaleString()}円（${yen(e.pl)}）` +
-        (e.memo ? `\nメモ: ${e.memo}` : "")),
+        (e.memo ? `\nメモ: ${e.memo}` : "") +
+        (e.imgs && e.imgs.length ? `\n添付写真${e.imgs.length}枚（端末保存）` : "")),
       "",
       "この立ち回りを査定・添削してください。",
     ];
@@ -987,7 +1194,7 @@
     try {
       setStatus("同期中…");
       await gistApi("PATCH", "/gists/" + s.gistId, s.token, {
-        files: { [GIST_FILE]: { content: JSON.stringify(loadLog(), null, 1) } },
+        files: { [GIST_FILE]: { content: JSON.stringify(cloudEntries(), null, 1) } },
       });
       setStatus("同期済み " + new Date().toLocaleTimeString());
     } catch (e) {
@@ -1034,7 +1241,7 @@
         const g = await gistApi("POST", "/gists", token, {
           description: "ハイエナ狩猟日誌（自動同期）",
           public: false,
-          files: { [GIST_FILE]: { content: JSON.stringify(loadLog(), null, 1) } },
+          files: { [GIST_FILE]: { content: JSON.stringify(cloudEntries(), null, 1) } },
         });
         gistId = g.id;
         $("fGistId").value = gistId;
@@ -1070,6 +1277,138 @@
     if (s.gistId) $("fGistId").value = s.gistId;
     if (s.token && s.gistId) syncPull(false);
   })();
+
+  // ---- DUOアンコール計算機 ----
+  const W_NORMAL = { 3: 24.6, 5: 5.0, 9: 64.1, 10: 6.3 };
+  const W_RESET  = { 3: 24.6, 5: 24.6, 9: 44.5, 10: 6.3 };
+  const CEIL_G = 800;
+  const COIN_PER_K = 32;
+  const calcState = { through: 0, games: 0, reset: "normal", rate: "eq" };
+
+  function calcWeights() {
+    return calcState.reset === "reset" ? W_RESET : W_NORMAL;
+  }
+
+  function calcProbs() {
+    const k = calcState.through;
+    const w = calcWeights();
+    const alive = Object.entries(w)
+      .map(([n, p]) => [Number(n), p])
+      .filter(([n]) => n > k);
+    const tail = alive.reduce((s, [, p]) => s + p, 0);
+    const pNext = tail > 0 ? (w[k + 1] || 0) / tail : 0;
+    const nearest = alive.length ? alive[0] : null;
+    return {
+      alive, tail, pNext,
+      nearestN: nearest ? nearest[0] : null,
+      nearestP: nearest ? nearest[1] / tail : 0,
+    };
+  }
+
+  function calcBorder() {
+    if (calcState.reset === "reset" && calcState.through === 0) return 230;
+    return calcState.rate === "eq" ? 550 : 600;
+  }
+
+  function calcVerdict(r) {
+    const g = calcState.games;
+    const k = calcState.through;
+    const remain = Math.max(0, CEIL_G - g);
+    const b = calcBorder();
+    const reasons = [];
+    let tier = "miokuri";
+
+    if (r.pNext >= 0.5) reasons.push(`次回ボーナスの天国以上保証が${Math.round(r.pNext * 100)}%`);
+    if (k >= 9) reasons.push("次回は10回目＝スルー天井到達が確定（ドキドキ以上濃厚）");
+    if (remain <= 100) reasons.push(`G数天井まで残り${remain}G`);
+    if (g >= b) reasons.push(`ハマり${g}Gがボーダー${b}Gを超過`);
+    if (k >= 6) reasons.push(`${k}スルーはスルー狙いの基本ライン（6〜）を満たす`);
+    else if (k >= 4 && calcState.reset === "reset") reasons.push(`リセット台の${k}スルーは5回目天井24.6%が近い`);
+    if (r.pNext >= 0.3 && r.pNext < 0.5) reasons.push(`次回天国保証${Math.round(r.pNext * 100)}%は攻め圏内`);
+    if (r.pNext === 0 && r.nearestN) {
+      const gapLbl = r.nearestN - k - 1 > 1 ? `${k + 1}〜${r.nearestN - 1}回目` : `${k + 1}回目`;
+      reasons.push(
+        `${gapLbl}のボーナスに保証枠は無い。次の保証ポイントは${r.nearestN}回目` +
+        `（あと${r.nearestN - k}回・${Math.round(r.nearestP * 100)}%）。道中の自力天国は別途上乗せ`
+      );
+    }
+
+    if (r.pNext >= 0.5 || k >= 9 || remain <= 100) tier = "atsu";
+    else if (g >= b || k >= 6 || (k >= 4 && calcState.reset === "reset") || r.pNext >= 0.3) tier = "nerai";
+    else if (g >= b - 100 || r.pNext >= 0.15) {
+      tier = "yosumi";
+      reasons.push(`ボーダーまであと${Math.max(0, b - g)}G。他の客が回すのを待つ手も`);
+    }
+    if (tier === "miokuri") reasons.push(`ボーダー${b}G・スルー6回のどちらにも届いていない`);
+    return { tier, reasons, remain };
+  }
+
+  function renderCalc() {
+    const r = calcProbs();
+    const v = calcVerdict(r);
+
+    $("calcThrough").textContent = calcState.through;
+    $("calcPNext").textContent = Math.round(r.pNext * 100);
+    if (r.nearestN) {
+      $("calcNextGuard").innerHTML =
+        `${r.nearestN}回目<small>（あと${r.nearestN - calcState.through}回・${Math.round(r.nearestP * 100)}%）</small>`;
+    } else {
+      $("calcNextGuard").textContent = "—";
+    }
+    $("calcRemain").textContent = v.remain;
+    $("calcInvest").textContent = Math.ceil(v.remain / COIN_PER_K);
+    $("calcStatNext").classList.toggle("hot", r.pNext >= 0.5);
+    $("calcStatGuard").classList.toggle("hot", r.nearestN !== null && r.nearestN - calcState.through === 1);
+
+    const el = $("calcVerdict");
+    el.className = "cverdict tier-" + v.tier + (v.tier === "atsu" || v.tier === "nerai" ? " lit" : "");
+    const words = {
+      atsu: ["ハイビスカス点灯級", "即確保。離れるな"],
+      nerai: ["狙い目", "座ってよし。当たるまで打ち切る前提で"],
+      yosumi: ["様子見", "あと一歩。基準到達までは我慢"],
+      miokuri: ["見送り", "この台はまだ獲物じゃない"],
+    };
+    $("calcVerdictWord").textContent = words[v.tier][0];
+    $("calcVerdictDesc").textContent = words[v.tier][1];
+    $("calcReasons").innerHTML = v.reasons.map((t) => `<li>${esc(t)}</li>`).join("");
+
+    const w = calcWeights();
+    const k = calcState.through;
+    $("calcDist").innerHTML = Object.entries(w).map(([n, p]) => {
+      const num = Number(n);
+      const dead = num <= k;
+      const cond = dead ? 0 : (p / r.tail) * 100;
+      return `<div class="dist-row${dead ? " dead" : ""}">
+        <span class="lbl">${n}回目<small>${dead ? "否定済み" : num === k + 1 ? "次のボーナス" : `あと${num - k}回`}</small></span>
+        <span class="bar"><i style="width:${dead ? 0 : Math.max(2, cond)}%"></i></span>
+        <span class="pct">${dead ? "—" : Math.round(cond) + "%"}</span>
+      </div>`;
+    }).join("");
+  }
+
+  $("calcInc").addEventListener("click", () => {
+    calcState.through = Math.min(9, calcState.through + 1);
+    renderCalc();
+  });
+  $("calcDec").addEventListener("click", () => {
+    calcState.through = Math.max(0, calcState.through - 1);
+    renderCalc();
+  });
+  $("calcGames").addEventListener("input", (e) => {
+    calcState.games = Math.max(0, Math.min(999, Number(e.target.value) || 0));
+    renderCalc();
+  });
+  for (const [segId, key] of [["calcResetSeg", "reset"], ["calcRateSeg", "rate"]]) {
+    $(segId).addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      calcState[key] = btn.dataset.v;
+      for (const b of $(segId).querySelectorAll("button")) b.classList.toggle("on", b === btn);
+      renderCalc();
+    });
+  }
+
+  renderCalc();
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
