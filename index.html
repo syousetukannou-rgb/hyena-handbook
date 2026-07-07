@@ -86,6 +86,7 @@
 
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
+  body { overflow-x: hidden; }
   body {
     margin: 0;
     background: var(--bg);
@@ -154,11 +155,11 @@
     padding: 8px 10px;
   }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; table-layout: fixed; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
   tr:last-child th, tr:last-child td { border-bottom: none; }
-  th { color: var(--ink-soft); font-weight: 600; white-space: nowrap; width: 7em; }
-  td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  th { color: var(--ink-soft); font-weight: 600; width: 6.5em; }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
   td .hot { color: var(--hot); font-weight: 800; }
   .table-scroll { overflow-x: auto; }
 
