@@ -1,0 +1,12 @@
+{
+  "name": "ハイエナ狩猟手帳",
+  "short_name": "狩猟手帳",
+  "description": "パチスロ天井狙いの機種別ボーダーと狩猟日誌",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F8F5F1",
+  "theme_color": "#B0742A",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

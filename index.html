@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ハイエナ狩猟手帳</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#B0742A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #F8F5F1;
+    --surface: #FFFFFF;
+    --surface2: #F1EBE3;
+    --ink: #29231E;
+    --ink-soft: #6E645A;
+    --line: #E2D9CD;
+    --accent: #B0742A;
+    --accent-soft: #F5E8D4;
+    --hot: #C7404F;
+    --hot-soft: #F9E2E5;
+    --ok: #237A55;
+    --ok-soft: #DFF0E8;
+    --chip-on: #29231E;
+    --chip-on-ink: #F8F5F1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171310;
+      --surface: #211C17;
+      --surface2: #2B241D;
+      --ink: #EFE7DC;
+      --ink-soft: #ABA093;
+      --line: #383026;
+      --accent: #D9A254;
+      --accent-soft: #3A2E1B;
+      --hot: #F0697A;
+      --hot-soft: #43222A;
+      --ok: #4CB98A;
+      --ok-soft: #1D362B;
+      --chip-on: #EFE7DC;
+      --chip-on-ink: #171310;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F8F5F1;
+    --surface: #FFFFFF;
+    --surface2: #F1EBE3;
+    --ink: #29231E;
+    --ink-soft: #6E645A;
+    --line: #E2D9CD;
+    --accent: #B0742A;
+    --accent-soft: #F5E8D4;
+    --hot: #C7404F;
+    --hot-soft: #F9E2E5;
+    --ok: #237A55;
+    --ok-soft: #DFF0E8;
+    --chip-on: #29231E;
+    --chip-on-ink: #F8F5F1;
+  }
+  :root[data-theme="dark"] {
+    --bg: #171310;
+    --surface: #211C17;
+    --surface2: #2B241D;
+    --ink: #EFE7DC;
+    --ink-soft: #ABA093;
+    --line: #383026;
+    --accent: #D9A254;
+    --accent-soft: #3A2E1B;
+    --hot: #F0697A;
+    --hot-soft: #43222A;
+    --ok: #4CB98A;
+    --ok-soft: #1D362B;
+    --chip-on: #EFE7DC;
+    --chip-on-ink: #171310;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP", system-ui, sans-serif;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 18px 14px 56px; }
+
+  header { margin-bottom: 14px; }
+  .eyebrow { font-size: 0.66rem; letter-spacing: 0.16em; color: var(--accent); font-weight: 700; }
+  h1 { font-size: 1.2rem; margin: 2px 0 0; letter-spacing: 0.02em; }
+  .sub { font-size: 0.76rem; color: var(--ink-soft); }
+
+  nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 2px 12px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 5;
+    -webkit-overflow-scrolling: touch;
+  }
+  nav button {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  nav button.on { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); }
+  nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .machine { display: none; flex-direction: column; gap: 12px; }
+  .machine.show { display: flex; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .card h2 {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+  .machine-head { border-left: 4px solid var(--accent); }
+  .machine-head .name { font-size: 1.05rem; font-weight: 800; }
+  .machine-head .meta { font-size: 0.74rem; color: var(--ink-soft); margin-top: 2px; }
+  .machine-head .oneline {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    background: var(--accent-soft);
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child th, tr:last-child td { border-bottom: none; }
+  th { color: var(--ink-soft); font-weight: 600; white-space: nowrap; width: 7em; }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  td .hot { color: var(--hot); font-weight: 800; }
+  .table-scroll { overflow-x: auto; }
+
+  ul.points { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  ul.points li {
+    font-size: 0.82rem;
+    padding: 8px 10px 8px 30px;
+    border-radius: 8px;
+    background: var(--surface2);
+    position: relative;
+  }
+  ul.points li::before {
+    content: "✓";
+    position: absolute;
+    left: 10px;
+    color: var(--ok);
+    font-weight: 800;
+  }
+  ul.points li.warn::before { content: "⚠"; color: var(--hot); }
+
+  .yame {
+    font-size: 0.84rem;
+    background: var(--ok-soft);
+    border: 1px solid var(--ok);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .yame b { color: var(--ok); }
+
+  .calclink {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--hot-soft);
+    border: 1px solid var(--hot);
+    color: var(--hot);
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .rules { border-left: 4px solid var(--hot); }
+  .rules ol { margin: 0; padding-left: 1.3em; font-size: 0.84rem; display: flex; flex-direction: column; gap: 6px; }
+
+  /* 日誌 */
+  #m-log .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  #m-log .field-label { font-size: 0.78rem; font-weight: 700; }
+  #m-log input, #m-log select, #m-log textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface2);
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  #m-log textarea { min-height: 72px; resize: vertical; }
+  #m-log input:focus-visible, #m-log select:focus-visible, #m-log textarea:focus-visible,
+  #m-log button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .money-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn {
+    width: 100%;
+    min-height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn.save { background: var(--accent); color: #fff; }
+  .btn.export { background: var(--hot-soft); color: var(--hot); border: 1px solid var(--hot); margin-top: 8px; }
+  .sumgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .sumgrid .cell { background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; text-align: center; }
+  .sumgrid .k { font-size: 0.64rem; color: var(--ink-soft); }
+  .sumgrid .v { font-size: 1.05rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .plus { color: var(--ok); }
+  .minus { color: var(--hot); }
+  .entry {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: var(--surface);
+    margin-bottom: 10px;
+  }
+  .entry .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 0.8rem; }
+  .entry .head .when { color: var(--ink-soft); }
+  .entry .head .pl { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+  .entry .body { font-size: 0.8rem; margin-top: 4px; }
+  .entry .memo { font-size: 0.76rem; color: var(--ink-soft); margin-top: 4px; white-space: pre-wrap; }
+  .entry .del {
+    margin-top: 8px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .log-empty { font-size: 0.8rem; color: var(--ink-soft); text-align: center; padding: 12px 0; }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    background: var(--chip-on);
+    color: var(--chip-on-ink);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 20;
+  }
+  .toast.show { opacity: 1; }
+
+  footer.note {
+    margin-top: 16px;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">HYENA FIELD NOTES</div>
+    <h1>ハイエナ狩猟手帳</h1>
+    <div class="sub">当日データだけで完結する6機種 — 座る前にパネルの機種名を必ず確認</div>
+  </header>
+
+  <nav id="tabs">
+    <button data-m="hokuto" class="on">北斗の拳</button>
+    <button data-m="tensei2">北斗 転生の章2</button>
+    <button data-m="duo">沖ドキDUOアンコール</button>
+    <button data-m="duo1">沖ドキDUO(初代)</button>
+    <button data-m="nangoku">南国育ち(スマスロ)</button>
+    <button data-m="nangoku30">南国育ち30</button>
+    <button data-m="chibariyo2">チバリヨ2</button>
+    <button data-m="kabaneri2">カバネリ2 海門決戦</button>
+    <button data-m="log">📔 日誌</button>
+  </nav>
+
+  <!-- 北斗の拳 -->
+  <section class="machine show" id="m-hokuto">
+    <div class="card machine-head">
+      <div class="name">スマスロ北斗の拳</div>
+      <div class="meta">2023年4月導入／サミー／設置台数最多クラス</div>
+      <div class="oneline">主食。G数×グラフの凹みの二段審査。座ったら当たるまで打ち切る</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td class="num">AT間 1268G+α</td></tr>
+        <tr><th>天井恩恵</th><td>継続率優遇＋北斗揃い期待度アップ</td></tr>
+        <tr><th>リセット時</th><td class="num">天井 800G+α に短縮</td></tr>
+        <tr><th>出玉の仕組み</th><td>AT1セット約110枚×バトル継続率ループ。無想転生で爆発</td></tr>
+        <tr><th>コイン持ち</th><td class="num">千円 約32G</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目（凹み＝スランプグラフの差枚）</h2>
+      <div class="table-scroll">
+      <table>
+        <tr><th>-1000枚以下</th><td class="num"><span class="hot">400G～</span>（最優先）</td></tr>
+        <tr><th>-500枚前後</th><td class="num">450G～</td></tr>
+        <tr><th>プラマイゼロ</th><td class="num">500G～</td></tr>
+        <tr><th>+500枚以上</th><td class="num">550G～</td></tr>
+        <tr><th>+1000枚以上</th><td class="num">600G～</td></tr>
+        <tr><th>リセット確認済</th><td class="num">100G～</td></tr>
+        <tr><th>グラフ読めない時</th><td class="num">一律 500G～</td></tr>
+      </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>AT後30G</b>示唆確認。天国示唆あれば128G目安まで様子見。地獄示唆連続・リプレイ3〜4回頻発でやめ。差枚+750枚以上は1G回してやめ</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>まず島を一周、現在G数400超えの位置を記憶→グラフの凹みで優先順位</li>
+        <li>ハマりG数は「前回当たりからの現在G数」。総回転と混同しない</li>
+        <li>着席前に最大投資を計算（残りG数÷32×千円）と閉店逆算（消化 約800G/時＋AT30分）</li>
+        <li class="warn">途中やめ厳禁。ハマり台の抽選は熱くならない — 価値は天井までの距離</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 転生の章2 -->
+  <section class="machine" id="m-tensei2">
+    <div class="card machine-head">
+      <div class="name">スマスロ北斗の拳 転生の章2</div>
+      <div class="meta">2026年1月導入／サミー／パネルに「転生の章2」表記</div>
+      <div class="oneline">初代と天井仕様が別物。休日昼の深ハマり拾い専用</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td class="num">通常 1536G</td></tr>
+        <tr><th>リセット時</th><td class="num">1280G に短縮</td></tr>
+        <tr><th>特殊条件</th><td>上位CZ失敗後は天国濃厚</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目</h2>
+      <table>
+        <tr><th>通常時</th><td class="num">900G～</td></tr>
+        <tr><th>リセット後</th><td class="num">650G～</td></tr>
+        <tr><th>上位CZ失敗後</th><td class="num"><span class="hot">0G～</span>（天国濃厚）</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>AT後基本やめ</b>。天破の刻を連続で引いていた履歴がある台は伝承モード確認後やめ</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>900G超えから天井まで残り約600G＝1時間半で決着。夕方拾いでも間に合う</li>
+        <li class="warn">初代の感覚で500Gから打たない。逆に初代を900G基準で見送らない</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DUOアンコール -->
+  <section class="machine" id="m-duo">
+    <div class="card machine-head">
+      <div class="name">スマスロ 沖ドキ！DUOアンコール</div>
+      <div class="meta">2025年導入／ユニバーサル／初代DUOとは別物</div>
+      <div class="oneline">スルー天井は抽選型（3・5・9・10回目）。判定は専用計算機で</div>
+    </div>
+    <a class="calclink" href="https://claude.ai/code/artifact/d1f3b3fd-4256-412a-ba1d-f7a76f5cfec5">🌺 天国期待度計算機を開く</a>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>G数天井</th><td class="num">通常A/B 800G+α（引き戻し/チャンスは200G）</td></tr>
+        <tr><th>天井恩恵</th><td>ボーナス＋のるカナチャンス（1G連高確率）</td></tr>
+        <tr><th>スルー天井</th><td class="num">3回目24.6%／5回目5.0%（リセ時24.6%）／9回目64.1%／10回目6.3%</td></tr>
+        <tr><th>スルー天井恩恵</th><td>ドキドキ以上濃厚・約50%で超ドキドキ</td></tr>
+        <tr><th>リセット恩恵</th><td>約50%で通常B以上＋約25%で4スルー天井</td></tr>
+        <tr><th>天国期待枚数</th><td class="num">約922〜991枚</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目</h2>
+      <table>
+        <tr><th>G数狙い</th><td class="num">等価550G～／5.6枚600G～</td></tr>
+        <tr><th>スルー狙い</th><td class="num">6スルー～（攻めて3〜4スルー）</td></tr>
+        <tr><th>リセット確定台</th><td class="num">0スルー 230G～</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>ボーナス後32G</b>（ドキハナチャンス時33G）。モードB以上濃厚示唆なら天国or有利切れまで続行（通常B中の当選は50%以上で天国以上）</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>スルー回数＝天国に入らなかったボーナスの回数を履歴から数える</li>
+        <li>3〜5スルーは保証の空白地帯。6スルーから9回目の64.1%が視野に入る</li>
+        <li class="warn">初代DUOの「6スルーで次回天国確定」はこの台には無い</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 沖ドキDUO 初代 -->
+  <section class="machine" id="m-duo1">
+    <div class="card machine-head">
+      <div class="name">沖ドキ！DUO（初代）</div>
+      <div class="meta">2021年導入／ユニバーサル／6.2号機。アンコールとは別物</div>
+      <div class="oneline">スルー天井は固定保証型。6スルー→7回目のボーナスで天国以上確定</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>G数天井</th><td class="num">通常A/B・特殊・準備系 800G（チャンス200G・保証32G）</td></tr>
+        <tr><th>スルー天井</th><td><span class="hot">6スルーで次回（7回目）天国以上確定</span></td></tr>
+        <tr><th>有利区間天井</th><td class="num">同一有利区間 約2000Gで次回天国以上確定</td></tr>
+        <tr><th>リセット</th><td>設定変更で天井リセット／電源OFF・ONは引き継ぎ</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目</h2>
+      <table>
+        <tr><th>G数狙い</th><td class="num">等価500G～／5.6枚550G～</td></tr>
+        <tr><th>スルー狙い</th><td class="num">等価4スルー～／5.6枚5スルー～</td></tr>
+        <tr><th>天国間ハマり</th><td class="num">1100G～</td></tr>
+        <tr><th>6スルー台</th><td class="num"><span class="hot">0G～ 即拾い</span>（次回天国確定）</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>天国間ハマりの数え方</h2>
+      <ul class="points">
+        <li>履歴を新しい方から遡り、<b>40G以下の当たりが続く塊＝天国</b>を見つける（前兆分のズレ込みで32Gが35〜38G表示になるため40G以下で区切る）</li>
+        <li>その天国の終わりを起点に、<b>各単発ボーナスの当選G数＋現在のハマりG数</b>を全部足す</li>
+        <li>例: 現在210G＋前回380G単発＋その前420G単発＝合計1010G → 1100まであと90G</li>
+        <li>合計<b>1100G超えで拾い</b>（現在G数は不問）／<b>2000G付近なら次回天国以上確定圏</b>、即確保で当たるまで打ち切り</li>
+        <li class="warn">リセットでカウント消滅。据え置き濃厚の店以外は当日履歴分だけで足す（当日だけで1100超えなら文句なし）</li>
+        <li>スルー回数と天国間合計の2つをメモる癖をつける</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>ボーナス後32G</b>（ドキハナチャンス時33Gまでフォロー。失敗後も50%で再発生）。モードB以上濃厚なら天国or有利切れまで続行</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>カラフル点滅で天国否定＝ドキドキ準備確定。次回当選まで絶対に打ち切る</li>
+        <li>スルーカウントがそのまま詰み筋。競合が減った今こそデータ取りで独占できる</li>
+        <li class="warn">6.2号機。認定期限でいつ撤去されてもおかしくない賞味期限つき</li>
+        <li class="warn">アンコール（スルー天井抽選型）と保証の仕組みが違う。タブを間違えない</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 南国育ち スマスロ -->
+  <section class="machine" id="m-nangoku">
+    <div class="card machine-head">
+      <div class="name">スマスロ南国育ち</div>
+      <div class="meta">2024年3月導入／オリンピア／メダルレス</div>
+      <div class="oneline">飛翔までモード転落なし＝スルーの価値が保存される。スルーが主役の台</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td class="num">996G+α</td></tr>
+        <tr><th>飛翔モード</th><td class="num">移行時の期待枚数 約1000枚</td></tr>
+        <tr><th>最大の特徴</th><td>飛翔モードに入るまでモードが落ちない</td></tr>
+        <tr><th>リセット恩恵</th><td>約7割で通常B以上（通常Bから50%で飛翔へ）</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目（スルー階段）</h2>
+      <table>
+        <tr><th>0〜2スルー</th><td class="num">650G～</td></tr>
+        <tr><th>3スルー</th><td class="num">350G～（ここから本番）</td></tr>
+        <tr><th>4スルー</th><td class="num">200G～（優先確保）</td></tr>
+        <tr><th>5スルー</th><td class="num"><span class="hot">0G～ 即拾い</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>ボーナスまたは飛翔終了後32G</b>回してやめ</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>スルー＝連チャンに繋がらなかった単発ボーナスの回数。当日履歴だけで数えられる</li>
+        <li>兼業なら表より100G深い条件で座ると堅い（例: 3スルー450G〜）</li>
+        <li class="warn">L南国育ちSPECIAL（2026年7月導入）は別物。解析が固まるまで打たない</li>
+        <li>入替で旧台がバラエティ落ちしたら穴化のチャンス</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 南国育ち30 -->
+  <section class="machine" id="m-nangoku30">
+    <div class="card machine-head">
+      <div class="name">南国育ち30</div>
+      <div class="meta">2021年導入／アムテックス／6号機・30φ</div>
+      <div class="oneline">有利区間ランプ搭載＝リセットを台が自己申告。単発後拾いが最大の蜜</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td class="num">通常996G／リセ後796G</td></tr>
+        <tr><th>短縮天井</th><td class="num">準備C以上滞在時のボーナス後 401G</td></tr>
+        <tr><th>リセット恩恵</th><td>高モード選択率優遇＋天井796G短縮</td></tr>
+        <tr><th>朝イチ判別</th><td>有利区間ランプ<b>消灯＝変更濃厚</b>／点灯＝据え置き濃厚</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目</h2>
+      <table>
+        <tr><th>通常時</th><td class="num">600G～</td></tr>
+        <tr><th>リセット後</th><td class="num">300G～</td></tr>
+        <tr><th>単発後拾い</th><td class="num"><span class="hot">単発後36G以内</span>→ランプ消灯まで打つ</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame">連チャン後は<b>1G回して</b>復活なしでやめ／単発後は<b>有利区間ランプ消灯</b>を毎G確認してやめ</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>クレジット表示脇の有利区間ランプの位置をまず覚える</li>
+        <li>単発後にランプ点灯のまま捨てられた台＝良モードの続き持ち</li>
+        <li>リプレイ入賞時の特殊フラッシュ＝通常C以上期待／遅れ演出のボーナス否定＝通常B以上確定</li>
+        <li class="warn">2021年の台。撤去は時間の問題、賞味期限つきの獲物</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- チバリヨ2 -->
+  <section class="machine" id="m-chibariyo2">
+    <div class="card machine-head">
+      <div class="name">スマスロ チバリヨ2（無印）</div>
+      <div class="meta">2024年3月導入／NET／30φ。プラス(2025年1月)とはボーダーが違う</div>
+      <div class="oneline">スルーの割引が最重量級。6スルーはG数不問で座る</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td class="num">通常999G／リセ時600G</td></tr>
+        <tr><th>仮天井</th><td class="num">350G振り分けあり</td></tr>
+        <tr><th>チェリー天井</th><td>45回で当選（カウンタに出ない=ラッキー枠扱い）</td></tr>
+        <tr><th>リセット恩恵</th><td>天井600G短縮＋チャンスB優遇</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目（スルー階段）</h2>
+      <table>
+        <tr><th>0スルー</th><td class="num">750G～</td></tr>
+        <tr><th>1スルー</th><td class="num">700G～</td></tr>
+        <tr><th>2スルー</th><td class="num">600G～</td></tr>
+        <tr><th>3スルー</th><td class="num">550G～（ここから本番）</td></tr>
+        <tr><th>4スルー</th><td class="num">500G～</td></tr>
+        <tr><th>5スルー</th><td class="num">400G～</td></tr>
+        <tr><th>6スルー以降</th><td class="num"><span class="hot">0G～ 即拾い</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>ボーナス後32G</b>でやめ。チャンスモード以上の示唆（トップランプ・花笠の挙動）があれば続行</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>仮天井狙いは250G～で350Gの前兆確認まで</li>
+        <li>朝のリセット狙いはリセ濃厚時のみ250G～の保守運用</li>
+        <li class="warn">2スルーまでは深ハマり専用。プラスと表を混ぜない（パネルの機種名確認）</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- カバネリ2 海門決戦 -->
+  <section class="machine" id="m-kabaneri2">
+    <div class="card machine-head">
+      <div class="name">スマスロ 甲鉄城のカバネリ 海門決戦</div>
+      <div class="meta">2026年3月導入／サミー／通称カバネリ2</div>
+      <div class="oneline">恩恵直結・ボーダー浅め・短縮台が当日履歴で見える優等生</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>天井</th><td>ゲーム数と周期の二本立て。到達でエピソードボーナス＋ST濃厚</td></tr>
+        <tr><th>周期</th><td class="num">150Gで1周期</td></tr>
+        <tr><th>天井短縮</th><td>設定変更後・<b>ST駆け抜け後</b>・景之ST終了後 → <span class="hot">G数596G／最大4周期</span>に短縮（設定1でも機械割100%超）</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>狙い目</h2>
+      <table>
+        <tr><th>等価</th><td class="num">400G～</td></tr>
+        <tr><th>5.6枚持ちメダル</th><td class="num">450G～</td></tr>
+        <tr><th>5.6枚現金</th><td class="num">500G～</td></tr>
+        <tr><th>短縮台</th><td class="num"><span class="hot">優先確保</span>（596G天井）</td></tr>
+        <tr><th>ゾーン狙い</th><td class="num">周期手前130G・270G付近～</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>駆け抜け台の判別方法</h2>
+      <ul class="points">
+        <li>当たりは2系統：<b>エピソードボーナス</b>（消化後ST濃厚）と<b>駿城ボーナス</b>（失敗あり＝ST非突入。失敗時は周期数・ST間G数を引き継ぐ）</li>
+        <li>履歴の一次判定：当たり1回ポツン＋獲得数百枚以下＝駆け抜けor駿城失敗の候補。連チャンなら当たりが短間隔で並び獲得が束になる</li>
+        <li><b>確定判定はサブ液晶の背景</b>：「桜」「海門城」などの背景は駿城ボーナス失敗後・ST終了後に変化する示唆。着席前にサブ液晶を覗く癖をつける</li>
+        <li>駿城失敗の単発も周期・G数を引き継ぐため悪くない拾い物。ST駆け抜け確認なら596G短縮でさらに強い</li>
+        <li>サミー機なのでユニメモ対応なら、遊技履歴の詳細確認も補助になる</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>やめどき</h2>
+      <div class="yame"><b>ST終了後スパッとやめ</b>が基本（終了後20Gはカバネリ高確だが、ポイントが大きく溜まっている時以外は深追いしない）</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>履歴で直近のST駆け抜け（STがすぐ終わった形跡）を確認できれば596G短縮台＝リセ判別不要で当日特定できる</li>
+        <li>周期150G刻み。130G・270Gなど周期手前の浅い台は小刻みに拾える</li>
+        <li class="warn">2026年3月導入の若い台。ボーダーは今後の実戦値で微調整されうる、たまに最新解析と照合を</li>
+        <li class="warn">人気版権で競合ハイエナも多め。休日夕方の時間差で勝負</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 狩猟日誌 -->
+  <section class="machine" id="m-log">
+    <div class="card machine-head">
+      <div class="name">狩猟日誌</div>
+      <div class="meta">記録はこの端末のブラウザ内にのみ保存（ブラウザデータ削除で消えるので注意）</div>
+      <div class="oneline">稼働を記録→「美咲先生に報告」でコピーして、チャットに貼れば査定してもらえる</div>
+    </div>
+
+    <div class="card">
+      <h2>通算成績</h2>
+      <div class="sumgrid">
+        <div class="cell"><div class="k">通算収支</div><div class="v" id="sumTotal">±0</div></div>
+        <div class="cell"><div class="k">稼働記録</div><div class="v" id="sumCount">0件</div></div>
+        <div class="cell"><div class="k">勝率</div><div class="v" id="sumWin">—</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>今日の稼働を記録</h2>
+      <div class="field">
+        <div class="field-label">日付</div>
+        <input type="date" id="fDate">
+      </div>
+      <div class="field">
+        <div class="field-label">店</div>
+        <input type="text" id="fStore" placeholder="例: 本拠地の小さい店">
+      </div>
+      <div class="field">
+        <div class="field-label">機種</div>
+        <select id="fMachine">
+          <option>北斗の拳</option>
+          <option>北斗 転生の章2</option>
+          <option>沖ドキDUOアンコール</option>
+          <option>沖ドキDUO(初代)</option>
+          <option>南国育ち(スマスロ)</option>
+          <option>南国育ち30</option>
+          <option>チバリヨ2</option>
+          <option>カバネリ2 海門決戦</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label">拾った条件（G数・スルー・凹みなど）</div>
+        <input type="text" id="fCond" placeholder="例: 520G 差枚-1200枚 / 4スルー300G">
+      </div>
+      <div class="money-row">
+        <div class="field">
+          <div class="field-label">投資（円）</div>
+          <input type="number" id="fIn" inputmode="numeric" placeholder="0">
+        </div>
+        <div class="field">
+          <div class="field-label">回収（円）</div>
+          <input type="number" id="fOut" inputmode="numeric" placeholder="0">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">展開メモ（当たり方・やめどき判断・反省など）</div>
+        <textarea id="fMemo" placeholder="例: 天井まで連行、AT3連890枚。終了後ジャギステージ確認で128Gまで様子見→示唆なしやめ"></textarea>
+      </div>
+      <button type="button" class="btn save" id="btnSave">この稼働を記録する</button>
+      <button type="button" class="btn export" id="btnExport">📋 美咲先生に報告（全記録をコピー）</button>
+    </div>
+
+    <div class="card">
+      <h2>記録一覧</h2>
+      <div id="logList"><div class="log-empty">まだ記録がないわ。初陣を待ってる</div></div>
+    </div>
+
+    <div class="card">
+      <h2>バックアップと復元</h2>
+      <div class="field-label" style="font-size:0.76rem; color:var(--ink-soft); font-weight:400; margin-bottom:8px;">
+        コピーしたコードをDropboxやメモアプリに貼って保管。別端末ではそのコードを下の欄に貼って復元すれば、日誌が丸ごと移る（＝手動同期）
+      </div>
+      <button type="button" class="btn export" id="btnBackup" style="margin-top:0">💾 バックアップをコピー</button>
+      <div class="field" style="margin-top:12px">
+        <div class="field-label">バックアップコードを貼り付けて復元</div>
+        <textarea id="fRestore" placeholder='[{"id":...}] 形式のコードをここに貼る'></textarea>
+      </div>
+      <button type="button" class="btn save" id="btnRestore">この内容で復元する（現在の記録と統合）</button>
+    </div>
+
+    <div class="card">
+      <h2>クラウド同期（GitHub Gist）</h2>
+      <div class="field-label" style="font-size:0.76rem; color:var(--ink-soft); font-weight:400; margin-bottom:8px;">
+        トークンを設定すると、記録のたびに自動でGistへ保存される。トークンはこの端末のブラウザ内にのみ保存
+      </div>
+      <div class="field">
+        <div class="field-label">GitHubトークン（gist権限のみ）</div>
+        <input type="password" id="fToken" placeholder="ghp_... または github_pat_...">
+      </div>
+      <div class="field">
+        <div class="field-label">Gist ID（空のまま接続すると自動作成）</div>
+        <input type="text" id="fGistId" placeholder="自動作成されます">
+      </div>
+      <button type="button" class="btn save" id="btnConnect">接続（初回設定・クラウドと統合）</button>
+      <button type="button" class="btn export" id="btnGistUrl">🔗 美咲先生用のGist URLをコピー</button>
+      <div class="field-label" id="syncStatus" style="margin-top:8px; font-size:0.74rem; color:var(--ink-soft); font-weight:400;">未接続</div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="card rules" style="margin-top:14px">
+    <h2>共通の掟</h2>
+    <ol>
+      <li>座る前にパネルの機種名を確認する（南国は3世代、チバリヨは2種、北斗も2種）</li>
+      <li>ボーダー際の痩せた獲物は見送る。基準に届く台がなければ打たずに帰る</li>
+      <li>天井狙いで座ったら当たるまでやめない。着席前に最大投資と閉店時刻を計算する</li>
+      <li>結果が単発でも札束でも、やめどき手順だけ守って次の獲物へ</li>
+    </ol>
+  </div>
+
+  <footer class="note">
+    ボーダーは無料公開の解析・実戦値ベース（2026年7月時点）。解析は改定されることがあるため、大きな勝負の前は最新情報と照合を。基準G数は等価前提のものを含む。非等価では50〜100G深めに見ると安全。
+  </footer>
+</div>
+
+<script>
+  const tabs = document.getElementById("tabs");
+  tabs.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    for (const b of tabs.querySelectorAll("button")) b.classList.toggle("on", b === btn);
+    for (const s of document.querySelectorAll(".machine")) {
+      s.classList.toggle("show", s.id === "m-" + btn.dataset.m);
+    }
+    window.scrollTo({ top: 0 });
+  });
+
+  // ---- 狩猟日誌 ----
+  const LOG_KEY = "hyena-diary-v1";
+  const $ = (id) => document.getElementById(id);
+  const yen = (n) => (n >= 0 ? "+" : "−") + Math.abs(n).toLocaleString() + "円";
+
+  function loadLog() {
+    try { return JSON.parse(localStorage.getItem(LOG_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveLog(entries, opts) {
+    localStorage.setItem(LOG_KEY, JSON.stringify(entries));
+    if (!opts || !opts.noSync) scheduleSync();
+  }
+
+  function mergeEntries(current, incoming) {
+    const ids = new Set(current.map((e) => e.id));
+    const merged = current.concat(incoming.filter((e) => !ids.has(e.id)));
+    merged.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id));
+    return merged;
+  }
+
+  function toastMsg(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  function renderLog() {
+    const entries = loadLog();
+    const total = entries.reduce((s, e) => s + e.pl, 0);
+    const wins = entries.filter((e) => e.pl > 0).length;
+
+    const st = $("sumTotal");
+    st.textContent = entries.length ? yen(total) : "±0";
+    st.className = "v " + (total > 0 ? "plus" : total < 0 ? "minus" : "");
+    $("sumCount").textContent = entries.length + "件";
+    $("sumWin").textContent = entries.length
+      ? Math.round((wins / entries.length) * 100) + "%"
+      : "—";
+
+    const list = $("logList");
+    if (!entries.length) {
+      list.innerHTML = '<div class="log-empty">まだ記録がないわ。初陣を待ってる</div>';
+      return;
+    }
+    list.innerHTML = entries
+      .slice()
+      .reverse()
+      .map((e) => `
+        <div class="entry" data-id="${e.id}">
+          <div class="head">
+            <span><b>${esc(e.machine)}</b> <span class="when">${esc(e.date)}・${esc(e.store) || "店名なし"}</span></span>
+            <span class="pl ${e.pl > 0 ? "plus" : e.pl < 0 ? "minus" : ""}">${yen(e.pl)}</span>
+          </div>
+          <div class="body">拾い条件: ${esc(e.cond) || "（未記入）"}／投資 ${e.inv.toLocaleString()}円 → 回収 ${e.ret.toLocaleString()}円</div>
+          ${e.memo ? `<div class="memo">${esc(e.memo)}</div>` : ""}
+          <button type="button" class="del">この記録を削除</button>
+        </div>`)
+      .join("");
+  }
+
+  function esc(s) {
+    return String(s ?? "").replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  $("fDate").value = new Date().toISOString().slice(0, 10);
+
+  $("btnSave").addEventListener("click", () => {
+    const inv = Number($("fIn").value) || 0;
+    const ret = Number($("fOut").value) || 0;
+    if (!$("fDate").value) { toastMsg("日付を入れて"); return; }
+    if (inv === 0 && ret === 0 && !$("fMemo").value.trim()) {
+      toastMsg("投資・回収かメモ、どれかは入れて");
+      return;
+    }
+    const entries = loadLog();
+    entries.push({
+      id: Date.now(),
+      date: $("fDate").value,
+      store: $("fStore").value.trim(),
+      machine: $("fMachine").value,
+      cond: $("fCond").value.trim(),
+      inv, ret,
+      pl: ret - inv,
+      memo: $("fMemo").value.trim(),
+    });
+    saveLog(entries);
+    for (const id of ["fCond", "fIn", "fOut", "fMemo"]) $(id).value = "";
+    renderLog();
+    toastMsg("記録したわ。お疲れさま！");
+  });
+
+  $("logList").addEventListener("click", (e) => {
+    const btn = e.target.closest(".del");
+    if (!btn) return;
+    const id = Number(btn.closest(".entry").dataset.id);
+    saveLog(loadLog().filter((en) => en.id !== id));
+    renderLog();
+    toastMsg("削除したわ");
+  });
+
+  $("btnExport").addEventListener("click", async () => {
+    const entries = loadLog();
+    if (!entries.length) { toastMsg("まだ記録がないわ"); return; }
+    const total = entries.reduce((s, e) => s + e.pl, 0);
+    const wins = entries.filter((e) => e.pl > 0).length;
+    const lines = [
+      "【美咲先生への戦果報告】",
+      `通算: ${yen(total)}（${entries.length}稼働・勝率${Math.round((wins / entries.length) * 100)}%）`,
+      "",
+      ...entries.map((e) =>
+        `▼${e.date} ${e.store || "店名なし"}／${e.machine}\n` +
+        `拾い条件: ${e.cond || "未記入"}\n` +
+        `投資${e.inv.toLocaleString()}円→回収${e.ret.toLocaleString()}円（${yen(e.pl)}）` +
+        (e.memo ? `\nメモ: ${e.memo}` : "")),
+      "",
+      "この立ち回りを査定・添削してください。",
+    ];
+    const text = lines.join("\n");
+    try {
+      await navigator.clipboard.writeText(text);
+      toastMsg("コピーしたわ。チャットに貼って報告して！");
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toastMsg("コピーしたわ。チャットに貼って報告して！");
+    }
+  });
+
+  $("btnBackup").addEventListener("click", async () => {
+    const entries = loadLog();
+    if (!entries.length) { toastMsg("まだ記録がないわ"); return; }
+    const text = JSON.stringify(entries);
+    try {
+      await navigator.clipboard.writeText(text);
+      toastMsg("バックアップをコピーしたわ。安全な場所に貼っときな");
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toastMsg("バックアップをコピーしたわ。安全な場所に貼っときな");
+    }
+  });
+
+  $("btnRestore").addEventListener("click", () => {
+    const raw = $("fRestore").value.trim();
+    if (!raw) { toastMsg("コードを貼ってから押して"); return; }
+    let incoming;
+    try {
+      incoming = JSON.parse(raw);
+      if (!Array.isArray(incoming)) throw new Error();
+    } catch {
+      toastMsg("コードの形式が読めないわ。コピーし直して");
+      return;
+    }
+    const valid = incoming.filter((e) =>
+      e && typeof e.id === "number" && typeof e.pl === "number" && e.date);
+    if (!valid.length) { toastMsg("有効な記録が入ってないみたい"); return; }
+    const merged = mergeEntries(loadLog(), valid);
+    saveLog(merged);
+    $("fRestore").value = "";
+    renderLog();
+    toastMsg(`復元完了。${merged.length}件になったわ`);
+  });
+
+  // ---- Gist同期 ----
+  const SYNC_KEY = "hyena-sync-v1";
+  const GIST_FILE = "hyena-diary.json";
+  let syncTimer = null;
+
+  function loadSync() {
+    try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveSync(s) { localStorage.setItem(SYNC_KEY, JSON.stringify(s)); }
+
+  function setStatus(msg, isErr) {
+    const el = $("syncStatus");
+    el.textContent = msg;
+    el.style.color = isErr ? "var(--hot)" : "var(--ink-soft)";
+  }
+
+  async function gistApi(method, path, token, body) {
+    const res = await fetch("https://api.github.com" + path, {
+      method,
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/vnd.github+json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) throw new Error("GitHub API " + res.status);
+    return res.json();
+  }
+
+  async function syncPush() {
+    const s = loadSync();
+    if (!s.token || !s.gistId) return;
+    try {
+      setStatus("同期中…");
+      await gistApi("PATCH", "/gists/" + s.gistId, s.token, {
+        files: { [GIST_FILE]: { content: JSON.stringify(loadLog(), null, 1) } },
+      });
+      setStatus("同期済み " + new Date().toLocaleTimeString());
+    } catch (e) {
+      setStatus("同期失敗（" + e.message + "）。記録は端末に残ってる", true);
+    }
+  }
+
+  function scheduleSync() {
+    const s = loadSync();
+    if (!s.token || !s.gistId) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(syncPush, 1500);
+  }
+
+  async function syncPull(showToast) {
+    const s = loadSync();
+    if (!s.token || !s.gistId) return;
+    try {
+      setStatus("クラウド確認中…");
+      const g = await gistApi("GET", "/gists/" + s.gistId, s.token);
+      const file = g.files && g.files[GIST_FILE];
+      if (file && file.content) {
+        const remote = JSON.parse(file.content);
+        if (Array.isArray(remote)) {
+          const merged = mergeEntries(loadLog(), remote.filter((e) => e && typeof e.id === "number"));
+          saveLog(merged, { noSync: true });
+          renderLog();
+        }
+      }
+      setStatus("同期済み " + new Date().toLocaleTimeString());
+      if (showToast) toastMsg("クラウドと統合したわ");
+    } catch (e) {
+      setStatus("取得失敗（" + e.message + "）", true);
+    }
+  }
+
+  $("btnConnect").addEventListener("click", async () => {
+    const token = $("fToken").value.trim();
+    let gistId = $("fGistId").value.trim();
+    if (!token) { toastMsg("トークンを入れて"); return; }
+    try {
+      setStatus("接続テスト中…");
+      if (!gistId) {
+        const g = await gistApi("POST", "/gists", token, {
+          description: "ハイエナ狩猟日誌（自動同期）",
+          public: false,
+          files: { [GIST_FILE]: { content: JSON.stringify(loadLog(), null, 1) } },
+        });
+        gistId = g.id;
+        $("fGistId").value = gistId;
+        toastMsg("Gistを新規作成したわ");
+      }
+      saveSync({ token, gistId });
+      await syncPull(true);
+      await syncPush();
+    } catch (e) {
+      setStatus("接続失敗（" + e.message + "）。トークンの権限を確認して", true);
+    }
+  });
+
+  $("btnGistUrl").addEventListener("click", async () => {
+    const s = loadSync();
+    if (!s.gistId) { toastMsg("先に接続して"); return; }
+    const url = "https://gist.github.com/" + s.gistId;
+    try { await navigator.clipboard.writeText(url); }
+    catch {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    toastMsg("URLをコピーしたわ。美咲先生に一度だけ教えて");
+  });
+
+  (function initSync() {
+    const s = loadSync();
+    if (s.token) $("fToken").value = s.token;
+    if (s.gistId) $("fGistId").value = s.gistId;
+    if (s.token && s.gistId) syncPull(false);
+  })();
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+
+  renderLog();
+</script>
+</body>
+</html>
