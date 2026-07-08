@@ -383,6 +383,7 @@
     <button data-m="tensei2">北斗 転生の章2</button>
     <button data-m="duo">沖ドキDUOアンコール</button>
     <button data-m="duo1">沖ドキDUO(初代)</button>
+    <button data-m="gold">沖ドキGOLD</button>
     <button data-m="nangoku">南国育ち(スマスロ)</button>
     <button data-m="chibariyo2">チバリヨ2</button>
     <button data-m="kabaneri2">カバネリ2 海門決戦</button>
@@ -563,6 +564,52 @@
         <li>スルーカウントがそのまま詰み筋。競合が減った今こそデータ取りで独占できる</li>
         <li class="warn">6.2号機。認定期限でいつ撤去されてもおかしくない賞味期限つき</li>
         <li class="warn">アンコール（スルー天井抽選型）と保証の仕組みが違う。タブを間違えない</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 沖ドキGOLD -->
+  <section class="machine" id="m-gold">
+    <div class="card machine-head">
+      <div class="name">沖ドキ！GOLD</div>
+      <div class="meta">6.5号機／ユニバーサル／モード推測型（保証なし）</div>
+      <div class="oneline">額面の天国間を鵜呑みにしない。累計2000G超え後のボーナスでカウントを読み直す</div>
+    </div>
+    <div class="card">
+      <h2>仕様</h2>
+      <table>
+        <tr><th>G数天井</th><td class="num">999G消化（有利区間切れ後は1000G目点灯）</td></tr>
+        <tr><th>有利区間</th><td>上限4000G。実践上は<span class="hot">累計2000G超え後の当選ボーナスでリセット</span>される説が有力（未完全解析）</td></tr>
+        <tr><th>金ドキモード</th><td>有利区間リセット時に移行の可能性。移行すれば32G以内BIG＋次回天国以上確定</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>天国間の数え方（2026-07-09改訂）</h2>
+      <ul class="points">
+        <li>各ボーナスに<b>BB約70G・RB約30G</b>を足して累計する（有利区間はボーナス中も進む）</li>
+        <li>累計が<b>2000Gを超えた後のボーナス</b>があったら、そこでカウントをゼロに戻して読み直す</li>
+        <li>リセット後の実質スルー数・実質ハマりだけで狙い目を判定する</li>
+        <li class="warn">額面の深ハマり（2000G超級）は「もう精算済み」の可能性が高い。昨日の敗戦の教訓</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>狙い目（実質値で判定）</h2>
+      <table>
+        <tr><th>スルー狙い</th><td class="num">実質5スルー～</td></tr>
+        <tr><th>天国間ハマり</th><td class="num">実質1100～1200G～（32Gやめ台は1400G～）</td></tr>
+        <tr><th>リセット直後の32G内BIG</th><td>金ドキの合図＝次回天国確定、全ツッパ</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>やめどき・撤退</h2>
+      <div class="yame"><b>初回ボーナス勝負</b>：モードB以上の積極示唆がなければボーナス後32G確認でその場撤退。確定系示唆（カラフル点滅＝ドキドキ準備確定等）が出た時だけ続行</div>
+    </div>
+    <div class="card">
+      <h2>チェックポイント</h2>
+      <ul class="points">
+        <li>示唆の判別に自信がない光り方は「示唆なし」として扱う（願望で続行しない）</li>
+        <li>回収上限が薄い台（天国期待値約1000枚級）。追加投資を積む構造の台ではない</li>
+        <li>専用の有利区間チェックツールあり: slotter-tools.net/okidoki/</li>
       </ul>
     </div>
   </section>
@@ -921,6 +968,7 @@
           <option>北斗 転生の章2</option>
           <option>沖ドキDUOアンコール</option>
           <option>沖ドキDUO(初代)</option>
+          <option>沖ドキGOLD</option>
           <option>南国育ち(スマスロ)</option>
           <option>チバリヨ2</option>
           <option>カバネリ2 海門決戦</option>
