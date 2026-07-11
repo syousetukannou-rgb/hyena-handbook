@@ -355,6 +355,13 @@
     width: 72px; height: 72px; object-fit: cover;
     border-radius: 8px; border: 1px solid var(--line); cursor: pointer;
   }
+  .notes-content h1 { font-size: 1.05rem; margin: 0 0 10px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+  .notes-content h2 { font-size: 0.95rem; margin: 18px 0 8px; color: var(--accent); border-left: 4px solid var(--accent); padding-left: 8px; }
+  .notes-content h3 { font-size: 0.86rem; margin: 12px 0 6px; font-weight: 800; }
+  .notes-content p { font-size: 0.82rem; margin: 4px 0; }
+  .notes-content ul { margin: 4px 0 8px; padding-left: 1.2em; }
+  .notes-content li { font-size: 0.82rem; margin: 3px 0; }
+
   .imgmodal {
     position: fixed; inset: 0; background: rgba(0,0,0,0.82);
     display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px;
@@ -394,6 +401,7 @@
     <button data-m="tokyorev">東京リベンジャーズ</button>
     <button data-m="zenigata5">主役は銭形5</button>
     <button data-m="calc">🌺 DUOアンコール計算機</button>
+    <button data-m="notes">📕 会員メモ</button>
     <button data-m="log">📔 日誌</button>
   </nav>
 
@@ -1054,6 +1062,22 @@
     </div>
   </section>
 
+  <!-- 会員メモ（秘密Gistから読み込み・公開リポジトリには内容を含まない） -->
+  <section class="machine" id="m-notes">
+    <div class="card machine-head">
+      <div class="name">📕 会員メモ</div>
+      <div class="meta">秘密Gistから読み込む私的メモ。日誌の同期設定（トークン）が必要</div>
+      <div class="oneline">この内容は端末上でのみ表示され、公開ページには含まれない</div>
+    </div>
+    <div class="card">
+      <button type="button" class="btn export" id="btnNotesReload" style="margin-top:0">🔄 メモを再読み込み</button>
+      <div class="field-label" id="notesStatus" style="margin-top:8px; font-size:0.74rem; color:var(--ink-soft); font-weight:400;">未読込</div>
+    </div>
+    <div class="card notes-content" id="notesContent">
+      <p style="font-size:0.82rem; color:var(--ink-soft);">日誌タブでクラウド同期（トークン）を設定すると、ここに会員メモが表示される。</p>
+    </div>
+  </section>
+
   <!-- 狩猟日誌 -->
   <section class="machine" id="m-log">
     <div class="card machine-head">
@@ -1201,7 +1225,9 @@
   }
   tabs.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
-    if (btn) selectTab(btn.dataset.m);
+    if (!btn) return;
+    selectTab(btn.dataset.m);
+    if (btn.dataset.m === "notes" && !window._notesLoaded) loadNotes();
   });
   document.getElementById("gotoCalc").addEventListener("click", (e) => {
     e.preventDefault();
@@ -1575,6 +1601,55 @@
     if (s.gistId) $("fGistId").value = s.gistId;
     if (s.token && s.gistId) syncPull(false);
   })();
+
+  // ---- 会員メモ（秘密Gistから取得） ----
+  const NOTES_FILE = "paid-notes.md";
+
+  function renderNotesMd(md) {
+    const esc2 = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const out = [];
+    let inList = false;
+    for (const raw of md.split("\n")) {
+      const line = raw.trimEnd();
+      const closeList = () => { if (inList) { out.push("</ul>"); inList = false; } };
+      if (line.startsWith("### ")) { closeList(); out.push("<h3>" + esc2(line.slice(4)) + "</h3>"); }
+      else if (line.startsWith("## ")) { closeList(); out.push("<h2>" + esc2(line.slice(3)) + "</h2>"); }
+      else if (line.startsWith("# ")) { closeList(); out.push("<h1>" + esc2(line.slice(2)) + "</h1>"); }
+      else if (line.startsWith("- ")) {
+        if (!inList) { out.push("<ul>"); inList = true; }
+        out.push("<li>" + esc2(line.slice(2)) + "</li>");
+      }
+      else if (line === "") { closeList(); }
+      else { closeList(); out.push("<p>" + esc2(line) + "</p>"); }
+    }
+    if (inList) out.push("</ul>");
+    return out.join("");
+  }
+
+  async function loadNotes() {
+    const s = loadSync();
+    const st = $("notesStatus");
+    if (!s.token || !s.gistId) {
+      st.textContent = "日誌タブでクラウド同期（トークン）を設定して";
+      return;
+    }
+    try {
+      st.textContent = "読込中…";
+      const g = await gistApi("GET", "/gists/" + s.gistId, s.token);
+      const file = g.files && g.files[NOTES_FILE];
+      if (!file || !file.content) {
+        st.textContent = "メモファイルが見つからない（美咲に相談して）";
+        return;
+      }
+      $("notesContent").innerHTML = renderNotesMd(file.content);
+      window._notesLoaded = true;
+      st.textContent = "読込済み " + new Date().toLocaleTimeString();
+    } catch (e) {
+      st.textContent = "読込失敗（" + e.message + "）";
+    }
+  }
+
+  $("btnNotesReload").addEventListener("click", () => { window._notesLoaded = false; loadNotes(); });
 
   // ---- DUOアンコール計算機 ----
   const W_NORMAL = { 3: 24.6, 5: 5.0, 9: 64.1, 10: 6.3 };
