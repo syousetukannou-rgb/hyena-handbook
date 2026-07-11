@@ -1,4 +1,4 @@
-const CACHE = "hyena-handbook-v8";
+const CACHE = "hyena-handbook-v9";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (e) => {

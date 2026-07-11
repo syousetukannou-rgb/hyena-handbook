@@ -995,6 +995,10 @@
       <div class="oneline">スルー天井振り分け（3・5・9・10回目）のベイズ更新。保証ベースの下限値表示</div>
     </div>
 
+    <div class="card" style="padding:10px 16px">
+      <div class="cfield-note" id="calcModeNote">判定基準: 無料ライン（保守）。日誌タブでトークンを設定すると正規ラインに自動切替</div>
+    </div>
+
     <div class="card">
       <h2>台の状態を入力</h2>
       <div class="cfield">
@@ -1574,6 +1578,7 @@
       saveSync({ token, gistId });
       await syncPull(true);
       await syncPush();
+      loadPaidParams();
     } catch (e) {
       setStatus("接続失敗（" + e.message + "）。トークンの権限を確認して", true);
     }
@@ -1599,7 +1604,10 @@
     const s = loadSync();
     if (s.token) $("fToken").value = s.token;
     if (s.gistId) $("fGistId").value = s.gistId;
-    if (s.token && s.gistId) syncPull(false);
+    if (s.token && s.gistId) {
+      syncPull(false);
+      loadPaidParams();
+    }
   })();
 
   // ---- 会員メモ（秘密Gistから取得） ----
@@ -1678,7 +1686,31 @@
     };
   }
 
+  let paidParams = null;
+
+  async function loadPaidParams() {
+    const s = loadSync();
+    if (!s.token || !s.gistId) return;
+    try {
+      const g = await gistApi("GET", "/gists/" + s.gistId, s.token);
+      const f = g.files && g.files["paid-params.json"];
+      if (f && f.content) {
+        paidParams = JSON.parse(f.content);
+        const note = $("calcModeNote");
+        if (note) note.innerHTML = "判定基準: <b>正規ライン（会員）適用中</b>。スルーは40G以下で天国区切り・1G連は天国扱いで数えること";
+        renderCalc();
+      }
+    } catch {}
+  }
+
   function calcBorder() {
+    const add = calcState.rate === "eq" ? 0 : 50;
+    const de = paidParams && paidParams.duoEncore;
+    if (de) {
+      const lad = calcState.reset === "reset" ? de.reset : de.normal;
+      const b = lad[Math.min(calcState.through, lad.length - 1)];
+      return b === 0 ? 0 : b + add;
+    }
     if (calcState.reset === "reset" && calcState.through === 0) {
       return calcState.rate === "eq" ? 230 : 280;
     }
@@ -1690,15 +1722,19 @@
     const k = calcState.through;
     const remain = Math.max(0, CEIL_G - g);
     const b = calcBorder();
+    const paid = !!(paidParams && paidParams.duoEncore);
     const reasons = [];
     let tier = "miokuri";
 
+    if (paid) reasons.push(`正規ライン: ${k}スルーは${b === 0 ? "0G〜（G数不問で即拾い）" : b + "G〜"}`);
     if (r.pNext >= 0.5) reasons.push(`次回ボーナスの天国以上保証が${Math.round(r.pNext * 100)}%`);
     if (k >= 9) reasons.push("次回は10回目＝スルー天井到達が確定（ドキドキ以上濃厚）");
     if (remain <= 100) reasons.push(`G数天井まで残り${remain}G`);
-    if (g >= b) reasons.push(`ハマり${g}Gがボーダー${b}Gを超過`);
-    if (k >= 6) reasons.push(`${k}スルーはスルー狙いの基本ライン（6〜）を満たす`);
-    else if (k >= 4 && calcState.reset === "reset") reasons.push(`リセット台の${k}スルーは5回目天井24.6%が近い`);
+    if (b > 0 && g >= b) reasons.push(`ハマり${g}Gがボーダー${b}Gを超過`);
+    if (!paid) {
+      if (k >= 6) reasons.push(`${k}スルーはスルー狙いの基本ライン（6〜）を満たす`);
+      else if (k >= 4 && calcState.reset === "reset") reasons.push(`リセット台の${k}スルーは5回目天井24.6%が近い`);
+    }
     if (r.pNext >= 0.3 && r.pNext < 0.5) reasons.push(`次回天国保証${Math.round(r.pNext * 100)}%は攻め圏内`);
     if (r.pNext === 0 && r.nearestN) {
       const gapLbl = r.nearestN - k - 1 > 1 ? `${k + 1}〜${r.nearestN - 1}回目` : `${k + 1}回目`;
@@ -1708,13 +1744,23 @@
       );
     }
 
-    if (r.pNext >= 0.5 || k >= 9 || remain <= 100) tier = "atsu";
-    else if (g >= b || k >= 6 || (k >= 4 && calcState.reset === "reset") || r.pNext >= 0.3) tier = "nerai";
-    else if (g >= b - 100 || r.pNext >= 0.15) {
-      tier = "yosumi";
-      reasons.push(`ボーダーまであと${Math.max(0, b - g)}G。他の客が回すのを待つ手も`);
+    if (paid) {
+      if (b === 0 || r.pNext >= 0.5 || k >= 9 || remain <= 100) tier = "atsu";
+      else if (g >= b) tier = "nerai";
+      else if (g >= b - 50 || r.pNext >= 0.15) {
+        tier = "yosumi";
+        reasons.push(`ボーダーまであと${Math.max(0, b - g)}G。他の客が回すのを待つ手も`);
+      }
+      if (tier === "miokuri") reasons.push(`正規ライン${b}Gに未達`);
+    } else {
+      if (r.pNext >= 0.5 || k >= 9 || remain <= 100) tier = "atsu";
+      else if (g >= b || k >= 6 || (k >= 4 && calcState.reset === "reset") || r.pNext >= 0.3) tier = "nerai";
+      else if (g >= b - 100 || r.pNext >= 0.15) {
+        tier = "yosumi";
+        reasons.push(`ボーダーまであと${Math.max(0, b - g)}G。他の客が回すのを待つ手も`);
+      }
+      if (tier === "miokuri") reasons.push(`ボーダー${b}G・スルー6回のどちらにも届いていない`);
     }
-    if (tier === "miokuri") reasons.push(`ボーダー${b}G・スルー6回のどちらにも届いていない`);
     return { tier, reasons, remain };
   }
 
