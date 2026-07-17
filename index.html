@@ -370,6 +370,8 @@
   .notes-content p { font-size: 0.82rem; margin: 4px 0; }
   .notes-content ul { margin: 4px 0 8px; padding-left: 1.2em; }
   .notes-content li { font-size: 0.82rem; margin: 3px 0; }
+  .paid-card { border: 1px solid var(--hot); background: var(--hot-soft); }
+  .paid-card > h2:first-child { color: var(--hot); border-left: none; padding-left: 0; margin-top: 0; font-size: 0.9rem; letter-spacing: 0.06em; }
 
   .imgmodal {
     position: fixed; inset: 0; background: rgba(0,0,0,0.82);
@@ -400,7 +402,9 @@
     <button data-m="duo">沖ドキDUOアンコール</button>
     <button data-m="duo1">沖ドキDUO(初代)</button>
     <button data-m="gold">沖ドキGOLD</button>
+    <button data-m="black">沖ドキBLACK</button>
     <button data-m="gorgeous">沖ドキゴージャス</button>
+    <button data-m="darkhibi">ダークハイビ</button>
     <button data-m="nangoku">南国育ち(スマスロ)</button>
     <button data-m="nangokusp">南国育ちSPECIAL</button>
     <button data-m="yabachiba">ヤバチバ</button>
@@ -411,7 +415,6 @@
     <button data-m="tokyorev">東京リベンジャーズ</button>
     <button data-m="zenigata5">主役は銭形5</button>
     <button data-m="calc">🌺 DUOアンコール計算機</button>
-    <button data-m="notes">📕 会員メモ</button>
     <button data-m="log">📔 日誌</button>
   </nav>
 
@@ -1110,18 +1113,37 @@
   </section>
 
   <!-- 会員メモ（秘密Gistから読み込み・公開リポジトリには内容を含まない） -->
-  <section class="machine" id="m-notes">
+  <!-- 沖ドキBLACK -->
+  <section class="machine" id="m-black">
     <div class="card machine-head">
-      <div class="name">📕 会員メモ</div>
-      <div class="meta">秘密Gistから読み込む私的メモ。日誌の同期設定（トークン）が必要</div>
-      <div class="oneline">この内容は端末上でのみ表示され、公開ページには含まれない</div>
+      <div class="name">沖ドキ！BLACK</div>
+      <div class="meta">2024年7月導入／ユニバーサル／モード推測型</div>
+      <div class="oneline">0スルー時の当選G数でボーダーが分岐。光り方が判断の鍵</div>
     </div>
     <div class="card">
-      <button type="button" class="btn export" id="btnNotesReload" style="margin-top:0">🔄 メモを再読み込み</button>
-      <div class="field-label" id="notesStatus" style="margin-top:8px; font-size:0.74rem; color:var(--ink-soft); font-weight:400;">未読込</div>
+      <h2>要点</h2>
+      <ul class="points">
+        <li>まず40G以下の当たりで天国を区切り、次に0スルー時の当選G数を見る。深い初当たり（400G超）は通常B滞在示唆で浅く狙える</li>
+        <li>有利区間計算は BIG+59G・REG+24G（GOLDの+70/+30と定数が違う）</li>
+        <li class="warn">モード推測型。初回ボーナス勝負で、ハイビスカスの光り方（高速・スロー点滅＝B以上示唆）が出なければ撤退</li>
+      </ul>
     </div>
-    <div class="card notes-content" id="notesContent">
-      <p style="font-size:0.82rem; color:var(--ink-soft);">日誌タブでクラウド同期（トークン）を設定すると、ここに会員メモが表示される。</p>
+  </section>
+
+  <!-- ダークハイビ -->
+  <section class="machine" id="m-darkhibi">
+    <div class="card machine-head">
+      <div class="name">Lダークハイビ <span style="color:var(--hot)">【暫定】</span></div>
+      <div class="meta">2026年6月導入／パイオニア／スマート沖スロ・低ベース</div>
+      <div class="oneline">スルー別の甘いラインは業界先出し・未検証。マージン運用</div>
+    </div>
+    <div class="card">
+      <h2>要点</h2>
+      <ul class="points">
+        <li>天井999G（ダーク準備のみ1005G）。有利切れ後50%以上でダークハイビモード（95%ループ・平均20連）</li>
+        <li>やめどきの鍵はボーナス中フェザーランプの色（赤・紫は42Gまで）と遅れ／ベルリプの示唆</li>
+        <li class="warn">スルー不問670〜は採用、スルー別の甘いラインは未検証。+100Gマージンで試験運用</li>
+      </ul>
     </div>
   </section>
 
@@ -1160,7 +1182,9 @@
           <option>沖ドキDUOアンコール</option>
           <option>沖ドキDUO(初代)</option>
           <option>沖ドキGOLD</option>
+          <option>沖ドキBLACK</option>
           <option>沖ドキゴージャス</option>
+          <option>ダークハイビ</option>
           <option>南国育ち(スマスロ)</option>
           <option>南国育ちSPECIAL</option>
           <option>ヤバチバ</option>
@@ -1280,7 +1304,6 @@
     const btn = e.target.closest("button");
     if (!btn) return;
     selectTab(btn.dataset.m);
-    if (btn.dataset.m === "notes" && !window._notesLoaded) loadNotes();
   });
   document.getElementById("gotoCalc").addEventListener("click", (e) => {
     e.preventDefault();
@@ -1699,6 +1722,7 @@
       await syncPull(true);
       await syncPush();
       loadPaidParams();
+      loadPaidInfo(true);
     } catch (e) {
       setStatus("接続失敗（" + e.message + "）。トークンの権限を確認して", true);
     }
@@ -1727,11 +1751,18 @@
     if (s.token && s.gistId) {
       syncPull(false);
       loadPaidParams();
+      setTimeout(() => loadPaidInfo(false), 0);
     }
   })();
 
-  // ---- 会員メモ（秘密Gistから取得） ----
+  // ---- 会員情報（秘密Gistから機種別に注入） ----
   const NOTES_FILE = "paid-notes.md";
+  // 機種タブID → paid-notes.md の見出しに含まれるキーワード
+  const PAID_KEYS = {
+    hokuto: "北斗の拳", duo: "DUOアンコール", kabaneri2: "カバネリ",
+    hihouden: "秘宝伝", yoshimune: "吉宗", gold: "GOLD", black: "BLACK",
+    gorgeous: "ゴージャス", nangokusp: "南国育ちSPECIAL", darkhibi: "ダークハイビ",
+  };
 
   function renderNotesMd(md) {
     const esc2 = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1754,30 +1785,72 @@
     return out.join("");
   }
 
-  async function loadNotes() {
-    const s = loadSync();
-    const st = $("notesStatus");
-    if (!s.token || !s.gistId) {
-      st.textContent = "日誌タブでクラウド同期（トークン）を設定して";
-      return;
-    }
-    try {
-      st.textContent = "読込中…";
-      const g = await gistApi("GET", "/gists/" + s.gistId, s.token);
-      const file = g.files && g.files[NOTES_FILE];
-      if (!file || !file.content) {
-        st.textContent = "メモファイルが見つからない（美咲に相談して）";
-        return;
+  // paid-notes.md を「## 見出し」ごとの本文に分割
+  function parsePaidSections(md) {
+    const sections = {};
+    let cur = null, buf = [];
+    for (const line of md.split("\n")) {
+      if (line.startsWith("## ")) {
+        if (cur !== null) sections[cur] = buf.join("\n");
+        cur = line.slice(3).trim();
+        buf = [];
+      } else if (cur !== null) {
+        buf.push(line);
       }
-      $("notesContent").innerHTML = renderNotesMd(file.content);
-      window._notesLoaded = true;
-      st.textContent = "読込済み " + new Date().toLocaleTimeString();
-    } catch (e) {
-      st.textContent = "読込失敗（" + e.message + "）";
+    }
+    if (cur !== null) sections[cur] = buf.join("\n");
+    return sections;
+  }
+
+  function findSection(sections, key) {
+    const h = Object.keys(sections).find((k) => k.includes(key));
+    return h ? sections[h] : null;
+  }
+
+  let paidSections = null;
+
+  // 各機種ページに「📕 会員情報」カードを注入
+  function fillPaidCards(sections) {
+    for (const [id, key] of Object.entries(PAID_KEYS)) {
+      const host = document.getElementById("m-" + id);
+      if (!host) continue;
+      let card = host.querySelector(".paid-card");
+      if (!card) {
+        card = document.createElement("section");
+        card.className = "card notes-content paid-card";
+        host.appendChild(card);
+      }
+      if (!sections) {
+        card.innerHTML = '<h2>📕 会員情報</h2><p style="color:var(--ink-soft)">日誌タブでクラウド同期（トークン）を設定すると、この機種の会員情報が表示される。</p>';
+        continue;
+      }
+      const body = findSection(sections, key);
+      let extra = "";
+      if (id === "duo") {
+        const g = findSection(sections, "汎用法則");
+        if (g) extra = renderNotesMd(g);
+      }
+      card.innerHTML = '<h2>📕 会員情報</h2>' +
+        (body ? renderNotesMd(body) : '<p style="color:var(--ink-soft)">この機種の会員メモは未登録。</p>') +
+        extra;
     }
   }
 
-  $("btnNotesReload").addEventListener("click", () => { window._notesLoaded = false; loadNotes(); });
+  async function loadPaidInfo(force) {
+    const s = loadSync();
+    if (!s.token || !s.gistId) { fillPaidCards(null); return; }
+    if (paidSections && !force) { fillPaidCards(paidSections); return; }
+    try {
+      const g = await gistApi("GET", "/gists/" + s.gistId, s.token);
+      const file = g.files && g.files[NOTES_FILE];
+      if (file && file.content) {
+        paidSections = parsePaidSections(file.content);
+        fillPaidCards(paidSections);
+      }
+    } catch (e) { /* 失敗時はプレースホルダーのまま */ }
+  }
+
+  fillPaidCards(null); // 初期プレースホルダー
 
   // ---- DUOアンコール計算機 ----
   const W_NORMAL = { 3: 24.6, 5: 5.0, 9: 64.1, 10: 6.3 };
