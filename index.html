@@ -370,6 +370,24 @@
   .notes-content p { font-size: 0.82rem; margin: 4px 0; }
   .notes-content ul { margin: 4px 0 8px; padding-left: 1.2em; }
   .notes-content li { font-size: 0.82rem; margin: 3px 0; }
+  #m-yuri .yseg { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  #m-yuri .yseg button { min-height: 46px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface2); color: var(--ink-soft); font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.9rem; }
+  #m-yuri .yseg button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  #m-yuri .yfield { display: flex; flex-direction: column; gap: 6px; }
+  #m-yuri .yfield + .yfield { margin-top: 14px; }
+  #m-yuri .ylabel { font-size: 0.85rem; font-weight: 700; }
+  #m-yuri .ynote { font-size: 0.72rem; color: var(--ink-soft); line-height: 1.5; }
+  #m-yuri input { width: 100%; min-height: 50px; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 8px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface2); color: var(--ink); }
+  #m-yuri input:focus-visible, #m-yuri .yseg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #m-yuri .ymoney { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  #m-yuri .ystats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #m-yuri .ystat { background: var(--surface2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  #m-yuri .ystat .k { font-size: 0.68rem; color: var(--ink-soft); }
+  #m-yuri .ystat .v { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #m-yuri .ystat .v small { font-size: 0.72rem; font-weight: 600; color: var(--ink-soft); }
+  #m-yuri .ystat.hot { border-color: var(--accent); }
+  #m-yuri .ystat.hot .v { color: var(--accent); }
+
   .paid-card { border: 1px solid var(--hot); background: var(--hot-soft); }
   .paid-card > h2:first-child { color: var(--hot); border-left: none; padding-left: 0; margin-top: 0; font-size: 0.9rem; letter-spacing: 0.06em; }
 
@@ -415,6 +433,7 @@
     <button data-m="tokyorev">東京リベンジャーズ</button>
     <button data-m="zenigata5">主役は銭形5</button>
     <button data-m="calc">🌺 DUOアンコール計算機</button>
+    <button data-m="yuri">🧮 有利区間計算機</button>
     <button data-m="log">📔 日誌</button>
   </nav>
 
@@ -1144,6 +1163,48 @@
         <li>やめどきの鍵はボーナス中フェザーランプの色（赤・紫は42Gまで）と遅れ／ベルリプの示唆</li>
         <li class="warn">スルー不問670〜は採用、スルー別の甘いラインは未検証。+100Gマージンで試験運用</li>
       </ul>
+    </div>
+  </section>
+
+  <!-- 沖ドキ有利区間・天国間計算機 -->
+  <section class="machine" id="m-yuri">
+    <div class="card machine-head">
+      <div class="name">🧮 沖ドキ 有利区間・天国間計算機</div>
+      <div class="meta">前回天国からの合計G数とボーナス回数から、ボーナスG込みの累計を自動計算</div>
+      <div class="oneline">金ドキ・黒ドキが抽選される「有利区間の切れ目」までの距離を可視化する</div>
+    </div>
+
+    <div class="card">
+      <h2>機種</h2>
+      <div class="yseg" id="yuriMachine">
+        <button type="button" data-v="gold" class="on">GOLD</button>
+        <button type="button" data-v="black">BLACK</button>
+        <button type="button" data-v="gorgeous">ゴージャス</button>
+      </div>
+      <div class="yfield">
+        <div class="ylabel">前回天国からの合計スタートG数</div>
+        <div class="ynote">直近の天国（40G以下の当たり）以降の、各当選G数を全部足した値＋現在のハマりG</div>
+        <input type="number" id="yuriG" inputmode="numeric" min="0" placeholder="例: 1200">
+      </div>
+      <div class="ymoney">
+        <div class="yfield"><div class="ylabel">その間のBB回数</div><input type="number" id="yuriBB" inputmode="numeric" min="0" value="0"></div>
+        <div class="yfield"><div class="ylabel">その間のRB回数</div><input type="number" id="yuriRB" inputmode="numeric" min="0" value="0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>結果</h2>
+      <div class="ystats">
+        <div class="ystat hot"><div class="k">累計有利区間G（ボーナスG込み）</div><div class="v"><span id="yuriTotal">0</span><small>G</small></div></div>
+        <div class="ystat"><div class="k">スルー回数</div><div class="v"><span id="yuriSlu">0</span><small>回</small></div></div>
+        <div class="ystat"><div class="k">切れ目（金ドキ抽選）まで</div><div class="v"><span id="yuriRemain">0</span><small>G</small></div></div>
+        <div class="ystat"><div class="k">天国間ハマり判定</div><div class="v" id="yuriJudge">—</div></div>
+      </div>
+      <div class="ynote" id="yuriMsg" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="ynote">加算値: GOLD=BB+70G/RB+30G、BLACK=BB+59G/RB+24G、ゴージャス=BB+60G/RB+25G（擬似遊技込み）。有利区間切れ目安はGOLD/BLACK約2000G・ゴージャス約3000G。累計がこれを超えた契機のボーナスで金ドキ/黒ドキが抽選される。<b>正確なスルー別の拾いボーダーは各機種の📕会員情報を参照。</b></div>
     </div>
   </section>
 
@@ -2023,6 +2084,60 @@
   }
 
   renderCalc();
+
+  // ---- 沖ドキ 有利区間・天国間計算機 ----
+  const YURI = {
+    gold: { bb: 70, rb: 30, cut: 2000, jackpot: "金ドキ" },
+    black: { bb: 59, rb: 24, cut: 2000, jackpot: "黒ドキ" },
+    gorgeous: { bb: 60, rb: 25, cut: 3000, jackpot: "上位モード" },
+  };
+  const yuriState = { machine: "gold" };
+
+  function renderYuri() {
+    const m = YURI[yuriState.machine];
+    const g = Math.max(0, Number($("yuriG").value) || 0);
+    const bb = Math.max(0, Number($("yuriBB").value) || 0);
+    const rb = Math.max(0, Number($("yuriRB").value) || 0);
+    const total = g + bb * m.bb + rb * m.rb;
+    const slu = bb + rb;
+    const remain = Math.max(0, m.cut - total);
+
+    $("yuriTotal").textContent = total;
+    $("yuriSlu").textContent = slu;
+    $("yuriRemain").textContent = remain;
+
+    const judge = $("yuriJudge");
+    const msg = $("yuriMsg");
+    if (total === 0) {
+      judge.textContent = "—";
+      judge.style.color = "var(--ink-soft)";
+      msg.textContent = "";
+      return;
+    }
+    if (total >= m.cut) {
+      judge.textContent = "契機到達";
+      judge.style.color = "var(--hot)";
+      msg.innerHTML = `累計が有利区間切れの目安（約${m.cut}G）を超えている。次のボーナスが<b>${m.jackpot}抽選のかかる契機</b>の可能性大。ただし契機ボーナスを既に消化済みなら精算後＝対象外の恐れがあるので、履歴で「2000G超え後にもう当たっていないか」を必ず確認すること。`;
+    } else if (total >= 1200) {
+      judge.textContent = "拾い圏";
+      judge.style.color = "var(--ok)";
+      msg.innerHTML = `天国間1200G超えで有利区間天井狙いの拾い目安。スルー回数が多いほど浅く狙えるので、<b>正確なボーダーは各機種の📕会員情報で確認</b>。切れ目まで残り${remain}G。`;
+    } else {
+      judge.textContent = "様子見";
+      judge.style.color = "var(--warn)";
+      msg.textContent = `天国間1200Gの目安に未達。あと${1200 - total}Gで拾い圏の目安。`;
+    }
+  }
+
+  $("yuriMachine").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    yuriState.machine = btn.dataset.v;
+    for (const b of $("yuriMachine").querySelectorAll("button")) b.classList.toggle("on", b === btn);
+    renderYuri();
+  });
+  for (const id of ["yuriG", "yuriBB", "yuriRB"]) $(id).addEventListener("input", renderYuri);
+  renderYuri();
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
